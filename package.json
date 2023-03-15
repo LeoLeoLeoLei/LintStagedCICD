@@ -1,0 +1,35 @@
+{
+  "name": "lint",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeoLeoLeoLei/LintStagedCICD.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeoLeoLeoLei/LintStagedCICD/issues"
+  },
+  "homepage": "https://github.com/LeoLeoLeoLei/LintStagedCICD#readme",
+  "devDependencies": {
+    "eslint": "8.36.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "lint-staged": "13.2.0"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "lint-staged": {
+    "src/*.jsx": "eslint"
+  }
+}
