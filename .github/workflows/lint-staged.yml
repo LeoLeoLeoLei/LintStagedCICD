@@ -15,4 +15,4 @@ jobs:
        - name: Install Dependencies
          run: yarn install
        - name: Run lint-staged
-          run: npx lint-staged
+         run: yarn lint-staged
