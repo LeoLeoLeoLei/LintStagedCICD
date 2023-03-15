@@ -1,26 +1,18 @@
-name: linting CI
+name: Lint
 
-on: 
+on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-
-  Setup:
-    - name: Setup Node.js and Yarn
-      uses: actions/setup-node@v3
-      with:
-        node-version: '12'
-        yarn-version: '1.22.10'
-        registry-url: "https://registry.npmjs.org"
-
+  lint:
+    runs-on: ubuntu-latest
     steps:
        - name: Checkout code
          uses: actions/checkout@v3
        - name: Install Dependencies
          run: yarn install
        - name: Run lint-staged
-          if: ${{ github.event_name == 'pull_request' }}
           run: yarn lint-staged
