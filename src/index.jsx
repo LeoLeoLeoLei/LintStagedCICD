@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
 
-var a = 1;
+var a = 2;
 
 ReactDOM.render(
   <React.StrictMode>
