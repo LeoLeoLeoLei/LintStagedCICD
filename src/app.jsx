@@ -1,5 +1,7 @@
 import React from 'react';
 
+var a = '123';
+
 function App() {
   return (
     <div className="App">
