@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {console.log('4')}
+        {console.log('3')}
         <div>Only test</div>
       </header>
     </div>
