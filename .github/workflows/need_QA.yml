@@ -54,7 +54,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
 
-          APPROVALS=$(cat ${{ steps.get-reviewers.outputs.reviews_file_path }} | jq '[.currentBranch.reviews.[] | select(.state == "APPROVED") | .author.login]')
+          cat ${{ steps.get-reviewers.outputs.reviews_file_path }}
 
           echo "The PR is approved by QA $APPROVALS"
 
