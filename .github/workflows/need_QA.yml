@@ -48,22 +48,23 @@ jobs:
           echo "The PR author is not in from the panda team. Skipping the job."
           exit 0
 
-      - name: check-approval
+      - name: get approval
+        id: get-approval
         if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
-        env: 
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-
           APPROVALS=$(cat ${{ steps.get-reviewers.outputs.reviews_file_path }} | jq '[.[] | select(.state == "APPROVED") | .user.login]')
-
-          echo "The PR is approved by QA $APPROVALS"
-
+          echo "approvals=$APPROVALS" >> $GITHUB_OUTPUT
+      - name: check approval
+        # if: ${{ contains(fromJson(env.PANDA_TEAM_QA), steps.get-approval.outputs.approvals) }}
+        # run: |
+        #   echo "The PR is approved by QA ${{ steps.get-approval.outputs.approvals }}"
+        #   exit 1
+        if: ${{ !contains(fromJson(env.PANDA_TEAM_QA), steps.get-approval.outputs.approvals) }}
+        run: |
+          echo "The PR is not approved by QA"
+          exit 0
         
-          if [[ ${{ contains(fromJson(env.PANDA_TEAM_QA), 'LeoLeoLeoLei') }} == 'true' ]]; then
-            echo "The PR is approved by QA"
-            exit 1
-          else
-            echo "The PR is not approved by QA"
-            exit 0
-          fi
+          
               
