@@ -22,14 +22,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # - name: Get Github Pull Request Reviewers
-      #   id: get-reviewrs
-      #   uses: LiamPerson/get-reviews-action@v1.1.2
-      #   with:
-      #     PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
-      #     GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Check PR author
         id: check_author
         if: ${{ contains(fromJson(env.PANDA_TEAM_DEV), github.event.pull_request.user.login) }}
