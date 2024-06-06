@@ -1,6 +1,8 @@
 name: Need QA Approve
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
     types: [opened, ready_for_review, reopened, edited, synchronize]
