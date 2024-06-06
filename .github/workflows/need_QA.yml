@@ -17,7 +17,6 @@ env:
 
 jobs:
   check-PR-author:
-    name: Check PR author
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -33,6 +32,7 @@ jobs:
         run: |
           echo "The PR author is not from the panda team"
           echo "steps.check_author.output.is_from_panda=false" >> $GITHUB_OUTPUT
+
       - name: Skip job if the PR is not from Panda Team
         if: ${{ steps.check_author.outputs.is_from_panda == 'false' }}
         run: |
