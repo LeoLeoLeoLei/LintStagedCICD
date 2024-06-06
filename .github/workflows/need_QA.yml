@@ -31,7 +31,7 @@ jobs:
           echo "steps.check_author.output.is_from_panda=true" >> $GITHUB_OUTPUT
       - if: ${{ !contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
-          echo "The PR author is not from the panda team ${{ env.PR_OWNER }}"
+          echo "The PR author is not from the panda team ${{ fromJson(env.PANDA_TEAM_DEV) }}"
           echo "steps.check_author.output.is_from_panda=false" >> $GITHUB_OUTPUT
 
       - name: Skip job if the PR is not from Panda Team
