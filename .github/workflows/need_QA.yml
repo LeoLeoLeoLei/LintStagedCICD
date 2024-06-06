@@ -13,6 +13,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
   REPO_NAME: ${{ github.repository }}
   REPO_OWNER: ${{ github.repository_owner }}
+  PR_OWNER: ${{ github.event.pull_request.user.login }}
 
 
 jobs:
@@ -26,11 +27,11 @@ jobs:
         id: check_author
         if: ${{ contains(fromJson('["leoleoleolei"]'), github.event.pull_request.user.login ) }}
         run: |
-          echo "The PR author is from the panda team"
+          echo "The PR author is from the panda team ${{ env.PR_OWNER }}"
           echo "steps.check_author.output.is_from_panda=true" >> $GITHUB_OUTPUT
       - if: ${{ !contains(fromJson('["leoleoleolei"]'), github.event.pull_request.user.login ) }}
         run: |
-          echo "The PR author is not from the panda team ${{ github.event.pull_request.user.login }}"
+          echo "The PR author is not from the panda team ${{ env.PR_OWNER }}"
           echo "steps.check_author.output.is_from_panda=false" >> $GITHUB_OUTPUT
 
       - name: Skip job if the PR is not from Panda Team
