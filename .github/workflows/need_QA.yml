@@ -8,7 +8,7 @@ on:
 env:
   #PANDA_TEAM_DEV: ("liuchuck, TurboLeiGlobalPay, LeoLeoLeoLei, WANG-Lisa, wbees, WangTao-CD, PuAlbert, LarryManMan, activebrook, yang-ting1, DragonLiParadise, jerryxie5214, HaotianF, zackdong1, fancyLiu55, kevinwang-active, Sred1992, DongminW, MarkPan726, BrainLei, MafeeWu, leon-liao1015, Jin39, Yukiwei1, LukeLiu-GP")
   #PANDA_TEAM_QA: ("leoleoleolei", "WANG-Lisa")
-  PANDA_TEAM_DEV: '["leoleoleolei"]'
+  PANDA_TEAM_DEV: '["LeoLeoLeoLei"]'
   PANDA_TEAM_QA: '["JIN39"]'
   PR_NUMBER: ${{ github.event.pull_request.number }}
   REPO_NAME: ${{ github.repository }}
