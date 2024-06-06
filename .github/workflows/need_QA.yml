@@ -50,7 +50,13 @@ jobs:
       - name: check-approval
         if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
         run: |
-          approval=$(steps.check_approval.outputs.approval)
+          # Install jq for JSON parsing
+          sudo apt-get install -y jq
+
+          APPROVALS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/pulls/${{ env.PR_NUMBER }}/reviews" | jq -r '.[] | select(.state == "APPROVED") | .user.login')
+          echo "APPROVALS: $APPROVALS"
+
           if [[ ${{ contains(fromJson(env.PANDA_TEAM_QA), 'LeoLeoLeoLei') }} == 'true' ]]; then
             echo "The PR is approved by QA"
             exit 1
