@@ -16,25 +16,19 @@ env:
   PR_OWNER: ${{ github.event.pull_request.user.login }}
 
 
+
 jobs:
   check-PR-author:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Get GitHub Pull Request Reviewers
-        id: get-reviews
-        uses: LiamPerson/get-reviews-action@v1.1.2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
-          GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
 
       - name: Check PR author
         id: check-PR-author
         if: ${{ contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
-          echo "The PR author is from the panda team ${{ steps.get-reviews.outputs.reviews_file_path }}"
+          echo "The PR author is from the panda team"
           echo "is_from_panda=true" >> $GITHUB_OUTPUT
       - if: ${{ !contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
@@ -49,14 +43,13 @@ jobs:
 
       - name: check-approval
         if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
+        env: 
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Install jq for JSON parsing
-          sudo apt-get install -y jq
+          $APPROVAL = gh pr status --json reviews --jq '.createdBy[1].reviews.[] | select(.state == "APPROVED") | .author.login '
 
-          APPROVALS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/pulls/${{ env.PR_NUMBER }}/reviews" | jq -r '.[] | select(.state == "APPROVED") | .user.login')
-          echo "APPROVALS: $APPROVALS"
-
+          echo "The PR is approved by $APPROVAL"
+        
           if [[ ${{ contains(fromJson(env.PANDA_TEAM_QA), 'LeoLeoLeoLei') }} == 'true' ]]; then
             echo "The PR is approved by QA"
             exit 1
