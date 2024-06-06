@@ -54,7 +54,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
 
-          APPROVALS=$(gh pr view "${{ env.PR_NUMBER }}" --repo "${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}" --json reviews --jq '.reviews | map(select(.state == "APPROVED")) | map(.author.login)')
+          APPROVALS = cat ${{ steps.get-reviewers.outputs.reviews_file_path }} | jq '[.currentBranch.reviews.[] | select(.state == "APPROVED") | .author.login]'
 
           echo "The PR is approved by QA $APPROVALS"
 
