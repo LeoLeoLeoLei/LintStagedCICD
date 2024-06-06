@@ -46,7 +46,7 @@ jobs:
         env: 
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          APPROVAL=$(gh pr status --json reviews --jq '.createdBy[1].reviews.[] | select(.state == "APPROVED") | .author.login ')
+          APPROVAL=$(gh pr status --json reviews --jq '.currentBranch.reviews.[] | select(.state == "APPROVED") | .author.login ')
 
           echo "The PR is approved by $APPROVAL APPROVAL"
         
