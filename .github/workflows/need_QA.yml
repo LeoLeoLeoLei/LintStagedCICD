@@ -64,7 +64,7 @@ jobs:
             console.log(approvedReviews)
             const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
             console.log('pandaTeamQa', pandaTeamQAReviewers)
-            const approved = pandaTeamQAReviewers.some(pandaTeamQA => approvedReviews.includes(pandaTeamQA))
+            const approved = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
             if (approved) {
               console.log("The PR is approved by QA")
             } else {
