@@ -1,4 +1,4 @@
-name: Check the PR author is not from the PandaTeam
+name: Upload the PR author is or not from the PandaTeam
 
 on:
   pull_request:
@@ -19,7 +19,7 @@ env:
   PR_OWNER: ${{ github.event.pull_request.user.login }}
 
 jobs:
-  check-If-QA-approved:
+  upload-PR-Author:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
