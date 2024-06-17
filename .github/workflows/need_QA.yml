@@ -30,15 +30,11 @@ jobs:
         if: ${{ contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
           echo "The PR author is from the panda team"
-          echo "is_from_panda=true" >> $GITHUB_OUTPUT
-          echo 'result1 ${{ toJson(steps.check-PR-author) }}'
+          echo true > /tmp/Check_PR_Author_Result.txt
       - if: ${{ !contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
           echo "The PR author is not from the panda team, skip this job"
-          echo "is_from_panda=false" >> $GITHUB_OUTPUT
-          echo 'result2 ${{ toJson(steps.check-PR-author) }}'
-      - run: | 
-          echo ${{ steps.check-PR-author.outputs.is_from_panda }} > /tmp/Check_PR_Author_Result.txt
+          echo false > /tmp/Check_PR_Author_Result.txt
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
