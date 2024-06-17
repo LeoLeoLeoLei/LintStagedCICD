@@ -60,8 +60,8 @@ jobs:
           script: |
             const fs = require('fs')
             const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
-            const approvedReviews = reviewsObj.filter(reviewer => reviewer.state === 'APPROVED')
-            console.log(JSON.parse(approvedReviews))
+            const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
+            console.log(approvedReviews)
             const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
             console.log('pandaTeamQa', pandaTeamQAReviewers)
             const approved = pandaTeamQAReviewers.some(pandaTeamQA => approvedReviews.includes(pandaTeamQA))
