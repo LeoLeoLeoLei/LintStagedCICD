@@ -18,7 +18,7 @@ env:
 
 
 jobs:
-  check-PR-author:
+  check-If-QA-approved:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
