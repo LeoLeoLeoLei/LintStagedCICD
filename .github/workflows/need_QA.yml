@@ -64,9 +64,9 @@ jobs:
             console.log(approvedReviews)
             const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
             console.log('pandaTeamQa', pandaTeamQAReviewers)
-            const approved = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
-            console.log('approved', approved)
-            if (approved) {
+            const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
+            console.log('foundQAApprovedList', foundQAApprovedList)
+            if (foundQAApprovedList.length > 0) {
               console.log("The PR is approved by QA")
             } else {
               throw new Error ("The PR is not approved by QA")
