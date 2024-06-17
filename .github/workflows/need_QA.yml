@@ -1,6 +1,9 @@
 name: Need QA Approve
 
 on:
+  pull_request:
+    branches: [main]
+    types: [opened, ready_for_review, reopened, edited, synchronize]
   pull_request_review:
     types: [submitted, edited, dismissed]
 
