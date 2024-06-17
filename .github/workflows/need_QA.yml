@@ -44,6 +44,11 @@ jobs:
           echo "The PR author is not from the panda team"
           echo "is_from_panda=false" >> $GITHUB_OUTPUT
       
+      - name: Skip Job because PR author is not from panda team
+        if: ${{ steps.check-PR-author.outputs.is_from_panda == 'false' }}
+        run: |
+          exit 1
+      
       - name: Check If QA approved
         id: check-If-QA-approved
         if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
@@ -54,21 +59,14 @@ jobs:
           script: |
             const fs = require('fs')
             const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
-            if (is_from_panda) {
-              const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
-              console.log(approvedReviews)
-              const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
-              console.log('pandaTeamQa', pandaTeamQAReviewers)
-              const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
-              console.log('foundQAApprovedList', foundQAApprovedList)
-              if (foundQAApprovedList.length > 0) {
-                console.log("The PR is approved by QA")
-              } else {
-                throw new Error ("The PR is not approved by QA")
-              }
+            const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
+            console.log(approvedReviews)
+            const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
+            console.log('pandaTeamQa', pandaTeamQAReviewers)
+            const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
+            console.log('foundQAApprovedList', foundQAApprovedList)
+            if (foundQAApprovedList.length > 0) {
+              console.log("The PR is approved by QA")
             } else {
-              console.log("The PR author is not in from the panda team. always successfully")
+              throw new Error ("The PR is not approved by QA")
             }
-
-
-             
