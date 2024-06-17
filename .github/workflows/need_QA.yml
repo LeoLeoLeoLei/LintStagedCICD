@@ -17,14 +17,20 @@ env:
   REPO_OWNER: ${{ github.repository_owner }}
   PR_OWNER: ${{ github.event.pull_request.user.login }}
 
-
-
 jobs:
   check-If-QA-approved:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Get team members
+        id: get_members
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/orgs/MobileBytes/teams")
+          echo "Team members: $RESPONSE"
+
       - name: Get GitHub Pull Request Reviews
         id: get-reviewers
         uses: LiamPerson/get-reviews-action@v1.1.2
@@ -32,6 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
           GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
+      
 
       - name: Check PR author
         id: check-PR-author
@@ -41,13 +48,9 @@ jobs:
           echo "is_from_panda=true" >> $GITHUB_OUTPUT
       - if: ${{ !contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
-          echo "The PR author is not from the panda team"
+          echo "The PR author is not from the panda team, skip this job"
           echo "is_from_panda=false" >> $GITHUB_OUTPUT
-      
-      - name: Skip Job because PR author is not from panda team
-        if: ${{ steps.check-PR-author.outputs.is_from_panda == 'false' }}
-        run: |
-          exit 1
+          exit 1      
       
       - name: Check If QA approved
         id: check-If-QA-approved
@@ -60,11 +63,8 @@ jobs:
             const fs = require('fs')
             const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
             const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
-            console.log(approvedReviews)
             const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
-            console.log('pandaTeamQa', pandaTeamQAReviewers)
             const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
-            console.log('foundQAApprovedList', foundQAApprovedList)
             if (foundQAApprovedList.length > 0) {
               console.log("The PR is approved by QA")
             } else {
