@@ -1,11 +1,12 @@
-name: Need QA Approve
+name: Check the PR author is not from the PandaTeam
 
 on:
   pull_request:
     branches: [main]
     types: [opened, ready_for_review, reopened, edited, synchronize]
-  pull_request_review:
-    types: [submitted, edited, dismissed]
+  workflow_run: 
+    workflows: [Need QA Approve]
+    types: [in_progress]
 
 env:
   #PANDA_TEAM_DEV: ("liuchuck, TurboLeiGlobalPay, LeoLeoLeoLei, WANG-Lisa, wbees, WangTao-CD, PuAlbert, LarryManMan, activebrook, yang-ting1, DragonLiParadise, jerryxie5214, HaotianF, zackdong1, fancyLiu55, kevinwang-active, Sred1992, DongminW, MarkPan726, BrainLei, MafeeWu, leon-liao1015, Jin39, Yukiwei1, LukeLiu-GP")
@@ -23,22 +24,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Get team members
-        id: get_members
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/orgs/MobileBytes/teams")
-          echo "Team members: $RESPONSE"
-
-      - name: Get GitHub Pull Request Reviews
-        id: get-reviewers
-        uses: LiamPerson/get-reviews-action@v1.1.2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
-          GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
-      
 
       - name: Check PR author
         id: check-PR-author
@@ -50,23 +35,10 @@ jobs:
         run: |
           echo "The PR author is not from the panda team, skip this job"
           echo "is_from_panda=false" >> $GITHUB_OUTPUT
-          exit 1      
-      
-      - name: Check If QA approved
-        id: check-If-QA-approved
-        if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
-        uses: actions/github-script@v7
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo ${{ steps.check-PR-author.outputs.is_from_panda }} > /tmp/Check_PR_Author_Result.txt
+      - name: Upload Result
+        uses: actions/upload-artifact@v4
         with:
-          script: |
-            const fs = require('fs')
-            const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
-            const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
-            const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
-            const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
-            if (foundQAApprovedList.length > 0) {
-              console.log("The PR is approved by QA")
-            } else {
-              throw new Error ("The PR is not approved by QA")
-            }
+          name: Check_PR_Author_Result.txt
+          path: /tmp/Check_PR_Author_Result.txt
+          overwrite: true
