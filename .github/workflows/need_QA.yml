@@ -57,10 +57,10 @@ jobs:
           APPROVALS=$(cat ${{ steps.get-reviewers.outputs.reviews_file_path }} | jq '[.[] | select(.state == "APPROVED") | .user.login]')
           if [[ " ${APPROVALS[@]} " =~ " $(printf '%s' "${{ fromJson(env.PANDA_TEAM_QA) }}") " ]]; then
             echo "The PR is approved by QA"
-            exit 1
+            exit 0
           else
             echo "The PR is not approved by QA"
-            exit 0
+            exit 1
           fi
       
         
