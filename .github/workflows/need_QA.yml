@@ -10,7 +10,7 @@ on:
 env:
   #PANDA_TEAM_DEV: ("liuchuck, TurboLeiGlobalPay, LeoLeoLeoLei, WANG-Lisa, wbees, WangTao-CD, PuAlbert, LarryManMan, activebrook, yang-ting1, DragonLiParadise, jerryxie5214, HaotianF, zackdong1, fancyLiu55, kevinwang-active, Sred1992, DongminW, MarkPan726, BrainLei, MafeeWu, leon-liao1015, Jin39, Yukiwei1, LukeLiu-GP")
   #PANDA_TEAM_QA: ("leoleoleolei", "WANG-Lisa")
-  PANDA_TEAM_DEV: '["LeoLeoLeoLei", "Jin39"]'
+  PANDA_TEAM_DEV: '["LeoLeoLeoLei"]'
   PANDA_TEAM_QA: '["Jin39"]'
   PR_NUMBER: ${{ github.event.pull_request.number }}
   REPO_NAME: ${{ github.repository }}
@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "The PR author is not in from the panda team. Skipping the job."
           exit 0
-
+      
       - name: Check If QA approved
         id: check-If-QA-approved
         if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
@@ -58,8 +58,27 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            const reviews = require('../reviewer.json')
+            const reviews = require(${{ steps.get-reviewers.outputs.reviews_file_path }}/reviewer.json')
             console.log('reviews', reviews)
             const pandaTeamQa = JSON.parse(process.env.PANDA_TEAM_QA)
             console.log('pandaTeamQa', pandaTeamQa)
+
+      # - name: Check If QA approved
+      #   id: check-If-QA-approved
+      #   if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     APPROVALS=$(cat ${{ steps.get-reviewers.outputs.reviews_file_path }} | jq '[.[] | select(.state == "APPROVED") | .user.login]')
+      #     echo "APPROVALS=$APPROVALS" >> $GITHUB_OUTPUT
+      #     if [[ "${{ fromJSON(APPROVALS) }}" =~ " $(printf '%s' "${{ fromJson(env.PANDA_TEAM_QA) }}") " ]]; then
+      #       echo "The PR is approved by QA"
+      #       exit 0
+      #     else
+      #       echo "The PR is not approved by QA"
+      #       exit 1
+      #     fi
+      # - 
+      
+
               
