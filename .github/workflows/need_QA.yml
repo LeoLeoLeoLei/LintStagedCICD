@@ -48,7 +48,7 @@ jobs:
           echo "The PR author is not in from the panda team. Skipping the job."
           exit 0
 
-      - name: get approval
+      - name: Check If QA approved
         id: get-approval
         if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
         env:
