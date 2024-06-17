@@ -58,7 +58,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            const reviews = require('./reviewer.json')
+            const reviews = require('../reviewer.json')
             console.log('reviews', reviews)
             const pandaTeamQa = JSON.parse(process.env.PANDA_TEAM_QA)
             console.log('pandaTeamQa', pandaTeamQa)
