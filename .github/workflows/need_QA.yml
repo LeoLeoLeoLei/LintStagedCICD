@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [main]
     types: [opened, ready_for_review, reopened, edited, synchronize]
+  pull_request_review:
+      types: [submitted]
 
 env:
   #PANDA_TEAM_DEV: ("liuchuck, TurboLeiGlobalPay, LeoLeoLeoLei, WANG-Lisa, wbees, WangTao-CD, PuAlbert, LarryManMan, activebrook, yang-ting1, DragonLiParadise, jerryxie5214, HaotianF, zackdong1, fancyLiu55, kevinwang-active, Sred1992, DongminW, MarkPan726, BrainLei, MafeeWu, leon-liao1015, Jin39, Yukiwei1, LukeLiu-GP")
