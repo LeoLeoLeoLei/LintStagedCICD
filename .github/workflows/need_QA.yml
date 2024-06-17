@@ -57,6 +57,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           APPROVALS=$(cat ${{ steps.get-reviewers.outputs.reviews_file_path }} | jq '[.[] | select(.state == "APPROVED") | .user.login]')
+          echo "APPROVALS: ${APPROVALS}"
           if [[ " ${APPROVALS[@]} " =~ " $(printf '%s' "${{ fromJson(env.PANDA_TEAM_QA) }}") " ]]; then
             echo "The PR is approved by QA"
             exit 0
