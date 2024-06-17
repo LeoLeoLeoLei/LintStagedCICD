@@ -5,7 +5,7 @@ on:
     branches: [main]
     types: [opened, ready_for_review, reopened, edited, synchronize]
   pull_request_review:
-      types: [submitted, edited, dismissed]
+    types: [submitted, edited, dismissed]
 
 env:
   #PANDA_TEAM_DEV: ("liuchuck, TurboLeiGlobalPay, LeoLeoLeoLei, WANG-Lisa, wbees, WangTao-CD, PuAlbert, LarryManMan, activebrook, yang-ting1, DragonLiParadise, jerryxie5214, HaotianF, zackdong1, fancyLiu55, kevinwang-active, Sred1992, DongminW, MarkPan726, BrainLei, MafeeWu, leon-liao1015, Jin39, Yukiwei1, LukeLiu-GP")
@@ -65,6 +65,7 @@ jobs:
             const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
             console.log('pandaTeamQa', pandaTeamQAReviewers)
             const approved = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
+            console.log('approved', approved)
             if (approved) {
               console.log("The PR is approved by QA")
             } else {
