@@ -40,3 +40,5 @@ jobs:
           name: Check_PR_Author_Result.txt
           path: /tmp/Check_PR_Author_Result.txt
           overwrite: true
+      - run: 
+          exit 1
