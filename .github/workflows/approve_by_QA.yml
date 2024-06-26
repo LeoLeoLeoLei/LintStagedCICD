@@ -50,8 +50,11 @@ jobs:
               const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
               
             } else {
-
-              console.log("The PR author is not from the panda team, skip this job")
+              if ('${{ github.event_name }}' === 'pull_request_review') {
+                console.log("1")
+              } else {
+                console.log("2")
+              }
               
             }
 
