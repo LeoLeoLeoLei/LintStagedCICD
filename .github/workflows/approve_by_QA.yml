@@ -48,18 +48,11 @@ jobs:
             if('${{ steps.check-PR-author.outputs.is_from_panda }}' === 'true') {
               const fs = require('fs')
               const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
-              # const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
-              # console.log(approvedReviews);
-              # const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
-              # console.log(pandaTeamQAReviewers);
-              # const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
-              # console.log(foundQAApprovedList);
-              # if (foundQAApprovedList.length > 0) {
-              #   console.log("The PR is approved by QA")
-              # } else {
-              #   throw new Error ("The PR is not approved by one of QA, please request QA approval before merging.")
-              # }
+              
             } else {
               console.log("The PR author is not from the panda team, skip this job")
               exit 0
             }
+
+
+            
