@@ -49,8 +49,11 @@ jobs:
               const fs = require('fs')
               const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
               const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
+              console.log(approvedReviews);
               const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
+              console.log(pandaTeamQAReviewers);
               const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
+              console.log(foundQAApprovedList);
               if (foundQAApprovedList.length > 0) {
                 console.log("The PR is approved by QA")
               } else {
