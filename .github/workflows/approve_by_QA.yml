@@ -51,7 +51,6 @@ jobs:
               
             } else {
               console.log("The PR author is not from the panda team, skip this job")
-              exit 0
             }
 
 
