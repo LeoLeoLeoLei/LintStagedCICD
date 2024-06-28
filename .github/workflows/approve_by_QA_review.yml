@@ -1,4 +1,4 @@
-name: Need QA Approve (pull_request_review)
+name: Need QA Approve Review
 
 on:
   pull_request_review:

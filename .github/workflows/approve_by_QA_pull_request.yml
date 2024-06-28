@@ -1,11 +1,11 @@
-name: Need QA Approve (pull_request)
+name: Need QA Approve Pull Request
 
 on:
   pull_request:
       branches: ["main"]
   workflow_dispatch:
   workflow_run:
-      workflows: ["Need QA Approve (pull_request_review)"]
+      workflows: ["Need QA Approve Review"]
       types:
         - completed
 
