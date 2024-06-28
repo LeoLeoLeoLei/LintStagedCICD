@@ -1,0 +1,44 @@
+name: Need QA Approve Pull Request
+
+on:
+  workflow_run:
+      workflows: ["Need QA Approve Review"]
+      types:
+        - completed
+        - requested
+        - in_progress
+
+env:
+  PANDA_TEAM_DEV: '["Jin39"]'
+  PANDA_TEAM_QA: '["LeoLeoLeoLei", "Jin39"]'
+  PR_NUMBER: 7
+  REPO_NAME: ${{ github.repository }}
+  REPO_OWNER: ${{ github.repository_owner }}
+  PR_OWNER: 'LeoLeoLeoLei'
+
+jobs:
+  check-If-QA-approved:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get GitHub Pull Request Reviews
+        id: get-reviewers
+        uses: LiamPerson/get-reviews-action@v1.1.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
+          GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
+
+      - name: Check If QA approved
+        id: check-If-QA-approved
+        uses: actions/github-script@v7
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const fs = require('fs')
+            const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
+
+            
