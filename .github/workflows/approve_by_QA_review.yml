@@ -34,7 +34,7 @@ jobs:
         with:
           script: |
             const prBranch = context.payload.pull_request.head.ref;
-            github.actions.createWorkflowDispatch({
+            github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'approve_by_QA_pull_request.yml',
