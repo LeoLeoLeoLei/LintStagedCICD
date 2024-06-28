@@ -1,8 +1,9 @@
 name: Need QA Approve Review
 
 on:
-  pull_request_review:
-      types: [submitted, edited, dismissed]
+  pull_request:
+    types: [opened, ready_for_review, reopened, edited, synchronize]
+    branches: ["main"]
 env:
   PANDA_TEAM_DEV: '["Jin39"]'
   PANDA_TEAM_QA: '["LeoLeoLeoLei", "Jin39"]'
