@@ -33,11 +33,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            const prBranch = context.payload.pull_request.head.ref;
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'approve_by_QA_pull_request.yml',
-              ref: prBranch
-            });
+            console.log('pull_request_review done');
             
