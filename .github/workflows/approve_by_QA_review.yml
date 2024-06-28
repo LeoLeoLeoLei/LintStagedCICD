@@ -13,7 +13,6 @@ env:
 
 jobs:
   check-If-QA-approved:
-    if: github.event.review.state == 'APPROVED' || github.event.review.state == 'DISMISSED'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
