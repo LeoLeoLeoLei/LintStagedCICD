@@ -7,6 +7,8 @@ on:
       workflows: ["Need QA Approve Review"]
       types:
         - completed
+        - requested
+        - in_progress
 
 env:
   PANDA_TEAM_DEV: '["Jin39"]'
@@ -17,7 +19,7 @@ env:
   PR_OWNER: ${{ github.event.pull_request.user.login }}
 
 jobs:
-  check-If-QA-approved-Pull-Request:
+  check-If-QA-approved:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
