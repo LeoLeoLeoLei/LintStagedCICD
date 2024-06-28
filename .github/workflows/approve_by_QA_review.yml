@@ -12,7 +12,7 @@ env:
   PR_OWNER: ${{ github.event.pull_request.user.login }}
 
 jobs:
-  check-If-QA-approved:
+  check-If-QA-approved-Review:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
