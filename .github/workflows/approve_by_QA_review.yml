@@ -1,9 +1,6 @@
-name: Need QA Approve
+name: Need QA Approve (pull_request_review)
 
 on:
-  pull_request:
-      branches: [main]
-      types: [opened, ready_for_review, reopened, edited, synchronize]
   pull_request_review:
       types: [submitted, edited, dismissed]
 env:
@@ -30,15 +27,6 @@ jobs:
           PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
           GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
 
-      - name: Check PR author
-        id: check-PR-author
-        if: ${{ contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
-        run: |
-          echo "is_from_panda=true" >> $GITHUB_OUTPUT
-      - if: ${{ !contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
-        run: |
-          echo "is_from_panda=false" >> $GITHUB_OUTPUT
-
       - name: Check If QA approved
         id: check-If-QA-approved
         uses: actions/github-script@v7
@@ -46,17 +34,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            if('${{ steps.check-PR-author.outputs.is_from_panda }}' === 'true') {
-              const fs = require('fs')
-              const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
-              
-            } else {
-              if ('${{ github.event_name }}' === 'pull_request_review') {
-                console.log("1")
-              } else {
-                console.log("2")
-              }
-              
-            }
-
+            const prBranch = context.payload.pull_request.head.ref;
+            github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'approve_by_QA_pull_request.yml',
+              ref: prBranch
+            });
             
