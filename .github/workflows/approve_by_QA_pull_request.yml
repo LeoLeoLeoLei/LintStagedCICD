@@ -2,13 +2,13 @@ name: Need QA Approve Pull Request
 
 on:
   workflow_run:
-      workflows: ["Need QA Approve Review"]
-      branches-ignore: 
-        - "main"
-      types:
-        - completed
-        - requested
-        - in_progress
+    workflows: ["Need QA Approve Review"]
+    branches-ignore: 
+      - "main"
+    types:
+      - completed
+      - requested
+      - in_progress
 
 env:
   PANDA_TEAM_DEV: '["Jin39"]'
