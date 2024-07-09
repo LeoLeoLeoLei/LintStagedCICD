@@ -8,7 +8,6 @@ on:
     types:
       - completed
       - requested
-      - in_progress
 
 env:
   PANDA_TEAM_DEV: '["Jin39"]'
