@@ -2,7 +2,7 @@ name: Need QA Approve Pull Request
 
 on:
   workflow_run:
-    workflows: ["Need QA Approve Review"]
+    workflows: ["Lint"]
     branches-ignore: 
       - "main"
     types:
