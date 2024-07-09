@@ -3,10 +3,6 @@ name: Need QA Approve Pull Request
 on:
   workflow_run:
     workflows: ["Lint"]
-    branches-ignore: 
-      - "main"
-    types:
-      - completed
 
 env:
   PANDA_TEAM_DEV: '["Jin39"]'
