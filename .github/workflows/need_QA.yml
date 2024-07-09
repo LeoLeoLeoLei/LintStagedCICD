@@ -1,77 +1,70 @@
 name: Need QA Approve
 
 on:
-  pull_request:
-    branches: [main]
-    types: [opened, ready_for_review, reopened, edited, synchronize]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
 
 env:
   #PANDA_TEAM_DEV: ("liuchuck, TurboLeiGlobalPay, LeoLeoLeoLei, WANG-Lisa, wbees, WangTao-CD, PuAlbert, LarryManMan, activebrook, yang-ting1, DragonLiParadise, jerryxie5214, HaotianF, zackdong1, fancyLiu55, kevinwang-active, Sred1992, DongminW, MarkPan726, BrainLei, MafeeWu, leon-liao1015, Jin39, Yukiwei1, LukeLiu-GP")
   #PANDA_TEAM_QA: ("leoleoleolei", "WANG-Lisa")
-  PANDA_TEAM_DEV: '["leoleoleolei"]'
-  PANDA_TEAM_QA: '["JIN39"]'
+  PANDA_TEAM_DEV: '["LeoLeoLeoLei"]'
+  PANDA_TEAM_QA: '["Jin39"]'
   PR_NUMBER: ${{ github.event.pull_request.number }}
   REPO_NAME: ${{ github.repository }}
   REPO_OWNER: ${{ github.repository_owner }}
+  PR_OWNER: ${{ github.event.pull_request.user.login }}
+
 
 
 jobs:
-  check-PR-author:
+  check-If-QA-approved:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      # - name: Get Github Pull Request Reviewers
-      #   id: get-reviewrs
-      #   uses: LiamPerson/get-reviews-action@v1.1.2
-      #   with:
-      #     PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
-      #     GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get GitHub Pull Request Reviews
+        id: get-reviewers
+        uses: LiamPerson/get-reviews-action@v1.1.2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST_ID: ${{ env.PR_NUMBER }}
+          GITHUB_REPOSITORY: ${{ env.REPO_NAME }}
 
       - name: Check PR author
-        id: check_author
-        if: ${{ contains(fromJson(env.PANDA_TEAM_DEV), github.event.pull_request.user.login) }}
+        id: check-PR-author
+        if: ${{ contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
           echo "The PR author is from the panda team"
-          echo "steps.check_author.output.is_from_panda=true" >> $GITHUB_OUTPUT
-      - if: ${{ !contains(fromJson(env.PANDA_TEAM_DEV), github.event.pull_request.user.login) }}
+          echo "is_from_panda=true" >> $GITHUB_OUTPUT
+      - if: ${{ !contains(fromJson(env.PANDA_TEAM_DEV), env.PR_OWNER ) }}
         run: |
-          echo "The PR author is not from the panda team ${{ env.PR_NUMBER }}"
-          echo "steps.check_author.output.is_from_panda=false" >> $GITHUB_OUTPUT
+          echo "The PR author is not from the panda team"
+          echo "is_from_panda=false" >> $GITHUB_OUTPUT
 
       - name: Skip job if the PR is not from Panda Team
-        if: ${{ steps.check_author.outputs.is_from_panda == 'false' }}
+        if: ${{ steps.check-PR-author.outputs.is_from_panda == 'false' }}
         run: |
           echo "The PR author is not in from the panda team. Skipping the job."
           exit 0
-
-  check-approval:
-    name: Check if QA approved
-    runs-on: ubuntu-latest
-    needs: check-PR-author
-    if: ${{ needs.check-PR-author.outputs.is_from_panda == 'true' }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check if specific user approved
-        id: check_approval
-        run: |
-          sudo apt-get install -y jq      
-
-          $APPROVALS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/pulls/${{ env.PR_NUMBER }}/reviews" | jq -r '.[] | select(.state == "APPROVED") | .user.login')
-
-          echo "steps.check_approval.output.approval=$APPROVALS" >> $GITHUB_OUTPUT
-
-      - name: Check PR approval is contains QA or not.
-        if: ${{ contains(fromJson(env.PANDA_TEAM_QA), steps.check_approval.outputs.approval) }}
-        run: |
-          echo "The PR is approved by QA"
-          exit 1
-      - if: ${{ !contains(fromJson(env.PANDA_TEAM_QA), steps.check_approval.outputs.approval) }}
-        run: |
-          echo "The PR is not approved by QA"
-          exit 0
+      
+      - name: Check If QA approved
+        id: check-If-QA-approved
+        if: ${{ steps.check-PR-author.outputs.is_from_panda == 'true' }}
+        uses: actions/github-script@v7
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const fs = require('fs')
+            const reviewsObj = fs.readFileSync('${{ steps.get-reviewers.outputs.reviews_file_path }}')
+            const approvedReviews = JSON.parse(reviewsObj).filter(reviewer => reviewer.state === 'APPROVED')
+            console.log(approvedReviews)
+            const pandaTeamQAReviewers = JSON.parse(process.env.PANDA_TEAM_QA)
+            console.log('pandaTeamQa', pandaTeamQAReviewers)
+            const foundQAApprovedList = approvedReviews.filter(pandaTeamQA => pandaTeamQAReviewers.includes(pandaTeamQA.user.login))
+            console.log('foundQAApprovedList', foundQAApprovedList)
+            if (foundQAApprovedList.length > 0) {
+              console.log("The PR is approved by QA")
+            } else {
+              throw new Error ("The PR is not approved by QA")
+            } 
