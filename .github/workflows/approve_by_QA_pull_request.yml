@@ -3,8 +3,8 @@ name: Need QA Approve Pull Request
 on:
   workflow_run:
       workflows: ["Need QA Approve Review"]
-      branches: 
-        - "**"
+      branches-ignore: 
+        - "main"
       types:
         - completed
         - requested
