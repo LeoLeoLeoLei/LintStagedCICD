@@ -1,8 +1,6 @@
 name: Need QA Approve Pull Request
 
-on:
-  workflow_run:
-    workflows: ["Lint"]
+on: [workflow_run]
 
 env:
   PANDA_TEAM_DEV: '["Jin39"]'
