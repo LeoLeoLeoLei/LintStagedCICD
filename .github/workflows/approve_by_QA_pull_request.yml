@@ -7,7 +7,6 @@ on:
       - "main"
     types:
       - completed
-      - requested
 
 env:
   PANDA_TEAM_DEV: '["Jin39"]'
