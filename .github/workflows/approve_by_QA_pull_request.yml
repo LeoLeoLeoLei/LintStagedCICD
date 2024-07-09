@@ -4,7 +4,7 @@ on:
   workflow_run:
       workflows: ["Need QA Approve Review"]
       branches: 
-        - "*"
+        - "**"
       types:
         - completed
         - requested
